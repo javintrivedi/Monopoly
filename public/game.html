@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monopoly - Game Board</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/board.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+  <div class="game-container" id="gameContainer">
+    <!-- Left Panel: Players -->
+    <div class="panel-left" id="panelLeft">
+      <div class="panel-header">Players</div>
+      <div id="playersPanel"></div>
+    </div>
+
+    <!-- Center: Board -->
+    <div class="panel-center">
+      <div class="board-wrapper">
+        <div class="board" id="board">
+          <!-- Board spaces will be rendered by JS -->
+          <div class="board-center" id="boardCenter">
+            <div class="board-logo">Monopoly</div>
+            <div class="board-logo-sub">Online Edition</div>
+            <div class="dice-area" id="diceArea">
+              <div class="scene">
+                <div class="cube" id="die1">
+                  <div class="cube__face cube__face--1"><span class="dot"></span></div>
+                  <div class="cube__face cube__face--2"><span class="dot"></span><span class="dot"></span></div>
+                  <div class="cube__face cube__face--3"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                  <div class="cube__face cube__face--4"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                  <div class="cube__face cube__face--5"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                  <div class="cube__face cube__face--6"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                </div>
+              </div>
+              <div class="scene">
+                <div class="cube" id="die2">
+                  <div class="cube__face cube__face--1"><span class="dot"></span></div>
+                  <div class="cube__face cube__face--2"><span class="dot"></span><span class="dot"></span></div>
+                  <div class="cube__face cube__face--3"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                  <div class="cube__face cube__face--4"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                  <div class="cube__face cube__face--5"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                  <div class="cube__face cube__face--6"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                </div>
+              </div>
+            </div>
+            <div id="centerActions"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel: Actions + Chat -->
+    <div class="panel-right">
+      <div class="actions-panel" id="actionsPanel">
+        <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <span>Actions</span>
+          <div class="audio-controls" style="display: flex; gap: 8px;">
+            <button id="toggleMusicBtn" class="btn-icon" title="Toggle Music">🎵</button>
+            <button id="toggleSoundBtn" class="btn-icon" title="Toggle Sound">🔊</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="rollBtn" disabled>🎲 Roll Dice</button>
+        <button class="btn btn-secondary" id="endTurnBtn" disabled>End Turn</button>
+        <div id="specialActions"></div>
+      </div>
+
+      <div class="property-mgmt" id="propertyMgmt">
+        <div class="panel-header">My Properties</div>
+        <div id="myProperties"></div>
+      </div>
+
+      <div class="chat-panel">
+        <div class="panel-header" style="padding: 12px 12px 8px;">Chat & Log</div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-area">
+          <input type="text" id="chatInput" placeholder="Type a message..." maxlength="200">
+          <button id="chatSendBtn">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals container -->
+  <div id="modalContainer"></div>
+  <div id="toast-container"></div>
+
+  <script src="js/socket.js"></script>
+  <script src="js/boardRenderer.js"></script>
+  <script src="js/diceRenderer.js"></script>
+  <script src="js/uiManager.js"></script>
+  <script src="js/tradeUI.js"></script>
+  <script src="js/chatUI.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Play Monopoly online with friends! Create or join a room for a multiplayer board game experience.">
+  <title>Monopoly Online - Multiplayer Board Game</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    .landing { position: relative; z-index: 2; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .landing-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-xl);
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+      animation: slideUp 0.6s ease;
+    }
+    .logo { text-align: center; margin-bottom: 36px; }
+    .logo h1 {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 800;
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .logo p { color: var(--text-muted); font-size: 0.9rem; margin-top: 8px; letter-spacing: 2px; text-transform: uppercase; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--accent-gold); }
+    .form-group select option { background: var(--bg-secondary); }
+    .token-select { display: flex; gap: 12px; }
+    .token-option {
+      flex: 1;
+      padding: 14px;
+      text-align: center;
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,0.04);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 1.5rem;
+    }
+    .token-option:hover { background: rgba(255,255,255,0.08); }
+    .token-option.selected { border-color: var(--accent-gold); background: rgba(245,200,66,0.1); }
+    .token-label { font-size: 0.65rem; color: var(--text-muted); margin-top: 4px; }
+    .divider {
+      display: flex; align-items: center; gap: 16px; margin: 28px 0;
+      color: var(--text-muted); font-size: 0.8rem;
+    }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border-glass); }
+    .btn-block { width: 100%; padding: 16px; font-size: 1rem; }
+    .room-code-input { text-align: center; font-size: 1.4rem !important; letter-spacing: 6px; font-weight: 700; text-transform: uppercase; }
+    .error-msg { color: var(--accent-red); font-size: 0.85rem; margin-top: 8px; text-align: center; display: none; }
+    /* Waiting room */
+    .waiting-room { display: none; }
+    .room-code-display {
+      text-align: center; padding: 20px;
+      background: rgba(245,200,66,0.08);
+      border: 1px dashed var(--accent-gold);
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+    }
+    .room-code-display .code {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      letter-spacing: 8px;
+    }
+    .room-code-display p { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+    .players-list { margin: 20px 0; }
+    .player-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px; border-radius: var(--radius-sm);
+      background: var(--bg-glass); margin-bottom: 8px;
+      animation: slideUp 0.3s ease;
+    }
+    .player-item-icon { font-size: 1.3rem; }
+    .player-item-name { font-weight: 600; flex: 1; }
+    .player-item-host { font-size: 0.7rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; }
+  </style>
+</head>
+<body>
+  <div class="hero-bg"></div>
+  <div class="hero-particles" id="particles"></div>
+
+  <div class="landing">
+    <div class="landing-card">
+      <!-- Create/Join Form -->
+      <div id="lobby-form">
+        <div class="logo">
+          <h1>Monopoly</h1>
+          <p>Online Multiplayer</p>
+        </div>
+
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="playerName" placeholder="Enter your name" maxlength="20" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label>Choose Token</label>
+          <div class="token-select">
+            <div class="token-option selected" data-token="car" id="token-car">🚗<div class="token-label">Car</div></div>
+            <div class="token-option" data-token="hat" id="token-hat">🎩<div class="token-label">Hat</div></div>
+            <div class="token-option" data-token="dog" id="token-dog">🐕<div class="token-label">Dog</div></div>
+            <div class="token-option" data-token="ship" id="token-ship">🚢<div class="token-label">Ship</div></div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="createBtn">Create New Game</button>
+
+        <div class="divider">or join existing</div>
+
+        <div class="form-group">
+          <input type="text" id="roomCode" class="room-code-input" placeholder="ROOM CODE" maxlength="6" autocomplete="off">
+        </div>
+
+        <button class="btn btn-secondary btn-block" id="joinBtn">Join Game</button>
+
+        <div class="error-msg" id="errorMsg"></div>
+      </div>
+
+      <!-- Waiting Room -->
+      <div id="waiting-room" class="waiting-room">
+        <div class="logo">
+          <h1>Monopoly</h1>
+          <p>Waiting for Players</p>
+        </div>
+
+        <div class="room-code-display">
+          <div class="code" id="displayRoomCode">------</div>
+          <p>Share this code with friends</p>
+        </div>
+
+        <div class="players-list" id="playersList"></div>
+
+        <button class="btn btn-primary btn-block" id="startBtn" style="display:none">Start Game</button>
+        <p id="waitMsg" style="text-align:center;color:var(--text-muted);font-size:0.85rem;">Waiting for host to start...</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

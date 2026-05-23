@@ -1,0 +1,114 @@
+/* animations.css - Keyframe animations */
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(245, 200, 66, 0.2); }
+  50% { box-shadow: 0 0 25px rgba(245, 200, 66, 0.4); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes tokenBounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.3) translateY(-5px); }
+  60% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+@keyframes cardFlip {
+  0% { transform: perspective(600px) rotateY(0deg); }
+  50% { transform: perspective(600px) rotateY(90deg); }
+  100% { transform: perspective(600px) rotateY(0deg); }
+}
+
+@keyframes moneyPop {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-40px) scale(1.5); }
+}
+
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(245, 200, 66, 0.3); }
+  50% { border-color: rgba(245, 200, 66, 0.8); }
+}
+
+@keyframes bgPan {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-slide-up { animation: slideUp 0.4s ease; }
+.animate-scale-in { animation: scaleIn 0.3s ease; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-glow { animation: glow 2s ease-in-out infinite; }
+.animate-pulse { animation: pulse 2s ease-in-out infinite; }
+.animate-token-bounce { animation: tokenBounce 0.5s ease; }
+.animate-card-flip { animation: cardFlip 0.6s ease; }
+
+/* Money change animation */
+.money-change {
+  position: absolute;
+  font-weight: 700;
+  font-size: 0.9rem;
+  pointer-events: none;
+  animation: moneyPop 1s ease forwards;
+  z-index: 100;
+}
+
+.money-change.positive { color: var(--accent-green); }
+.money-change.negative { color: var(--accent-red); }
+
+/* Landing page specific animations */
+.hero-bg {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 30%, #0a1a2e 60%, #0a0a1a 100%);
+  background-size: 400% 400%;
+  animation: bgPan 15s ease infinite;
+  z-index: 0;
+}
+
+.hero-particles {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: rgba(245, 200, 66, 0.3);
+  border-radius: 50%;
+  animation: float var(--duration, 6s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}

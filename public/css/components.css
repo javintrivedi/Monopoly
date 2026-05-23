@@ -1,0 +1,395 @@
+/* components.css - UI components for game page */
+
+/* Game layout */
+.game-container {
+  display: grid;
+  grid-template-columns: 280px 1fr 280px;
+  grid-template-rows: 1fr;
+  min-height: 100vh;
+  gap: 0;
+}
+
+/* Left panel - Players */
+.panel-left {
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-glass);
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Right panel - Actions & Chat */
+.panel-right {
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-glass);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Center - Board */
+.panel-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  position: relative;
+}
+
+/* Panel headers */
+.panel-header {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+/* Player card */
+.player-card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  transition: var(--transition);
+}
+
+.player-card.active {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 20px rgba(245, 200, 66, 0.15);
+}
+
+.player-card.bankrupt {
+  opacity: 0.4;
+}
+
+.player-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.player-token-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.player-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.player-money {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.player-properties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 8px;
+}
+
+.player-prop-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  opacity: 0.8;
+}
+
+.player-prop-dot.mortgaged {
+  opacity: 0.3;
+}
+
+.player-status {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.player-status.in-jail {
+  color: var(--accent-red);
+}
+
+/* Turn indicator */
+.turn-indicator {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent-gold);
+  animation: pulse 2s infinite;
+}
+
+/* Actions panel */
+.actions-panel {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.actions-panel .btn {
+  width: 100%;
+}
+
+/* Property management */
+.property-mgmt {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-glass);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.prop-mgmt-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 0.8rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.prop-mgmt-item:last-child { border-bottom: none; }
+
+.prop-mgmt-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.prop-mgmt-actions button {
+  padding: 3px 8px;
+  font-size: 0.65rem;
+  border-radius: 4px;
+  background: var(--bg-glass);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-glass);
+}
+
+.prop-mgmt-actions button:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Chat panel */
+.chat-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chat-message {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-glass);
+}
+
+.chat-message .chat-name {
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+.chat-message.system {
+  color: var(--text-muted);
+  font-style: italic;
+  background: none;
+  font-size: 0.75rem;
+}
+
+.chat-input-area {
+  display: flex;
+  padding: 10px;
+  gap: 8px;
+  border-top: 1px solid var(--border-glass);
+}
+
+.chat-input-area input {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
+.chat-input-area input:focus {
+  border-color: var(--accent-purple);
+}
+
+.chat-input-area button {
+  padding: 10px 16px;
+  background: var(--gradient-purple);
+  color: white;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* Game log */
+.game-log {
+  padding: 12px;
+  max-height: 120px;
+  overflow-y: auto;
+  border-top: 1px solid var(--border-glass);
+}
+
+.log-entry {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  padding: 2px 0;
+}
+
+/* Property detail modal */
+.property-detail {
+  text-align: center;
+}
+
+.property-detail-color {
+  height: 40px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
+
+.property-detail h3 {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+
+.rent-table {
+  width: 100%;
+  font-size: 0.85rem;
+  border-collapse: collapse;
+  margin: 12px 0;
+}
+
+.rent-table td {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.rent-table td:first-child {
+  text-align: left;
+  color: var(--text-secondary);
+}
+
+.rent-table td:last-child {
+  text-align: right;
+  font-weight: 600;
+}
+
+/* Trade modal */
+.trade-section {
+  margin: 16px 0;
+}
+
+.trade-section h4 {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.trade-props {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.trade-prop-chip {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  border: 1px solid var(--border-glass);
+  background: var(--bg-glass);
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+
+.trade-prop-chip.selected {
+  border-color: var(--accent-gold);
+  background: rgba(245, 200, 66, 0.15);
+}
+
+.trade-money-input {
+  width: 120px;
+  padding: 8px 12px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+
+.btn-icon {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.btn-icon:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.1);
+}
+
+.btn-icon.disabled {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .game-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+  .panel-left {
+    flex-direction: row;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-glass);
+    padding: 12px;
+  }
+  .player-card { min-width: 180px; }
+  .panel-right {
+    border-left: none;
+    border-top: 1px solid var(--border-glass);
+    max-height: 300px;
+  }
+}
