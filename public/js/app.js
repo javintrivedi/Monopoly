@@ -44,17 +44,42 @@
     setTimeout(() => toast.remove(), 3500);
   }
 
-  function connectWS() {
+  function getWSUrl() {
+    const customUrl = localStorage.getItem('monopoly_server_url');
+    if (customUrl) return customUrl;
     const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    ws = new WebSocket(`${protocol}//${location.host}`);
+    return `${protocol}//${location.host}`;
+  }
+
+  function showTroubleshootingTip() {
+    const troubleBanner = document.getElementById('troubleBanner');
+    if (troubleBanner) {
+      troubleBanner.style.display = 'block';
+    }
+  }
+
+  function connectWS() {
+    const wsUrl = getWSUrl();
+    console.log('🔌 Connecting to WebSocket server:', wsUrl);
+    ws = new WebSocket(wsUrl);
     ws.onmessage = (e) => {
       const msg = JSON.parse(e.data);
       handleMessage(msg);
     };
-    ws.onerror = () => showError('Connection error');
-    ws.onclose = () => showError('Disconnected from server');
-    return new Promise((resolve) => {
+    ws.onerror = () => {
+      showError('Connection error');
+      showTroubleshootingTip();
+    };
+    ws.onclose = () => {
+      showError('Disconnected from server');
+      showTroubleshootingTip();
+    };
+    return new Promise((resolve, reject) => {
       ws.onopen = resolve;
+      ws.onerror = (err) => {
+        showTroubleshootingTip();
+        reject(err);
+      };
     });
   }
 
@@ -152,5 +177,58 @@
   });
   document.getElementById('playerName').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') document.getElementById('createBtn').click();
+  });
+
+  // Settings modal controls
+  const settingsModal = document.getElementById('settingsModal');
+  const serverUrlInput = document.getElementById('serverUrlInput');
+  const openSettingsBtn = document.getElementById('openSettingsBtn');
+  const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+  const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+  const setupServerBtn = document.getElementById('setupServerBtn');
+
+  function openSettings() {
+    serverUrlInput.value = localStorage.getItem('monopoly_server_url') || '';
+    settingsModal.style.display = 'flex';
+  }
+
+  function closeSettings() {
+    settingsModal.style.display = 'none';
+  }
+
+  openSettingsBtn.addEventListener('click', openSettings);
+  closeSettingsBtn.addEventListener('click', closeSettings);
+  if (setupServerBtn) {
+    setupServerBtn.addEventListener('click', openSettings);
+  }
+
+  saveSettingsBtn.addEventListener('click', () => {
+    let url = serverUrlInput.value.trim();
+    if (url) {
+      // Basic validation and protocol correction
+      if (!url.startsWith('ws://') && !url.startsWith('wss://')) {
+        if (url.startsWith('https://')) {
+          url = url.replace('https://', 'wss://');
+        } else if (url.startsWith('http://')) {
+          url = url.replace('http://', 'ws://');
+        } else {
+          const isIp = /^[0-9.]+$/.test(url.split(':')[0]);
+          const protocol = (isIp || url.includes('localhost')) ? 'ws://' : 'wss://';
+          url = protocol + url;
+        }
+      }
+      localStorage.setItem('monopoly_server_url', url);
+      showToast('Configuration saved successfully!', 'success');
+      const troubleBanner = document.getElementById('troubleBanner');
+      if (troubleBanner) troubleBanner.style.display = 'none';
+    } else {
+      localStorage.removeItem('monopoly_server_url');
+      showToast('Reset to default local server configuration', 'info');
+    }
+    closeSettings();
+  });
+
+  settingsModal.addEventListener('click', (e) => {
+    if (e.target === settingsModal) closeSettings();
   });
 })();

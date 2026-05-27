@@ -9,8 +9,17 @@ class GameSocket {
 
   connect() {
     return new Promise((resolve, reject) => {
-      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-      this.ws = new WebSocket(`${protocol}//${location.host}`);
+      let wsUrl;
+      const customUrl = localStorage.getItem('monopoly_server_url');
+      if (customUrl) {
+        wsUrl = customUrl;
+      } else {
+        const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        wsUrl = `${protocol}//${location.host}`;
+      }
+      
+      console.log('🔌 Connecting to WebSocket server:', wsUrl);
+      this.ws = new WebSocket(wsUrl);
       this.ws.onopen = () => { this.reconnectAttempts = 0; resolve(); };
       this.ws.onmessage = (e) => {
         try {

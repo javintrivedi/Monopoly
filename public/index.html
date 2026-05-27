@@ -105,9 +105,129 @@
     .player-item-icon { font-size: 1.3rem; }
     .player-item-name { font-weight: 600; flex: 1; }
     .player-item-host { font-size: 0.7rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Custom Server Settings Styles */
+    .settings-btn {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.3rem;
+      transition: var(--transition);
+      z-index: 100;
+    }
+    .settings-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: rotate(45deg);
+    }
+    .settings-btn:active {
+      transform: scale(0.95);
+    }
+    .custom-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeIn 0.25s ease;
+    }
+    .custom-modal {
+      background: #12122a;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+      animation: modalIn 0.3s ease;
+    }
+    .custom-modal h2 {
+      margin-bottom: 12px;
+      font-family: var(--font-display);
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .custom-modal p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .custom-modal .form-group label {
+      font-size: 0.75rem;
+      color: var(--accent-gold);
+    }
+    .custom-modal .hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+    .trouble-banner {
+      display: none;
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      text-align: left;
+      animation: slideUp 0.4s ease;
+    }
+    .trouble-banner h4 {
+      color: var(--accent-red);
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .trouble-banner p {
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .trouble-banner a {
+      color: var(--accent-gold);
+      font-weight: 600;
+      text-decoration: underline;
+    }
+    .trouble-banner .btn-sm {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      color: var(--text-primary);
+      margin-top: 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .trouble-banner .btn-sm:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
   </style>
 </head>
 <body>
+  <!-- Server Settings Gear Icon -->
+  <button class="settings-btn" id="openSettingsBtn" title="Connection Settings">⚙️</button>
   <div class="hero-bg"></div>
   <div class="hero-particles" id="particles"></div>
 
@@ -146,6 +266,16 @@
         <button class="btn btn-secondary btn-block" id="joinBtn">Join Game</button>
 
         <div class="error-msg" id="errorMsg"></div>
+
+        <!-- Troubleshooting Banner for Vercel Deployments -->
+        <div class="trouble-banner" id="troubleBanner">
+          <h4>⚠️ Server Disconnected</h4>
+          <p>Since Vercel is serverless, persistent WebSocket connections are not supported directly on this URL.</p>
+          <div style="margin-bottom: 12px; font-size: 0.8rem;">
+            👉 <strong>Solution:</strong> Deploy the backend to <a href="https://render.com" target="_blank">Render</a> or <a href="https://railway.app" target="_blank">Railway</a> and configure the WebSocket Server URL below.
+          </div>
+          <button class="btn-sm" id="setupServerBtn">⚙️ Configure WebSocket Server URL</button>
+        </div>
       </div>
 
       <!-- Waiting Room -->
@@ -169,6 +299,25 @@
   </div>
 
   <div id="toast-container"></div>
+
+  <!-- Custom Server Settings Modal -->
+  <div class="custom-modal-overlay" id="settingsModal">
+    <div class="custom-modal">
+      <h2>Connection Settings</h2>
+      <p>By default, the game connects to the local host. Since Vercel is serverless, you need to deploy the game server to a platform like Render or Railway and specify the URL below.</p>
+      
+      <div class="form-group">
+        <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--accent-gold); margin-bottom: 8px; text-transform: uppercase;">WebSocket Server URL</label>
+        <input type="text" id="serverUrlInput" placeholder="e.g., wss://monopoly-backend.onrender.com" autocomplete="off" style="width: 100%; padding: 14px 18px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); border-radius: var(--radius-md); color: var(--text-primary); font-size: 1rem;">
+        <div class="hint">Leave empty to default to <strong>local server</strong> (automatic detection based on current browser URL).</div>
+      </div>
+
+      <div class="modal-actions" style="display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end;">
+        <button class="btn btn-secondary" id="closeSettingsBtn">Cancel</button>
+        <button class="btn btn-primary" id="saveSettingsBtn">Save Configuration</button>
+      </div>
+    </div>
+  </div>
   <script src="js/app.js"></script>
 </body>
 </html>
